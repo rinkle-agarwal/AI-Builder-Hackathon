@@ -1,0 +1,39 @@
+{
+  "products": [
+    {"id": "atta", "name": "Whole Wheat Atta", "unit": "5 kg", "price": 249},
+    {"id": "dal", "name": "Toor Dal", "unit": "1 kg", "price": 150},
+    {"id": "butter", "name": "Salted Butter", "unit": "500 g", "price": 100},
+    {"id": "milk", "name": "Full Cream Milk", "unit": "1 L", "price": 68},
+    {"id": "eggs", "name": "Farm Eggs", "unit": "12 pcs", "price": 96},
+    {"id": "rice", "name": "Basmati Rice", "unit": "5 kg", "price": 449},
+    {"id": "banana", "name": "Bananas", "unit": "1 kg", "price": 58},
+    {"id": "tomato", "name": "Tomatoes", "unit": "1 kg", "price": 42},
+    {"id": "onion", "name": "Onions", "unit": "2 kg", "price": 76},
+    {"id": "paneer", "name": "Paneer", "unit": "200 g", "price": 92},
+    {"id": "oil", "name": "Sunflower Oil", "unit": "1 L", "price": 148},
+    {"id": "tea", "name": "Assam Tea Leaves", "unit": "500 g", "price": 210}
+  ],
+  "planted_patterns": {
+    "drip_pricing": {
+      "target_product": "atta",
+      "fee_label": "Delivery fee",
+      "fee_amount": 49
+    },
+    "false_urgency_timer": {
+      "target_product": "atta"
+    },
+    "basket_sneaking": {
+      "target": "checkout",
+      "line": "Donate ₹10 to FreshCart Foundation",
+      "amount": 10
+    },
+    "confirm_shaming": {
+      "target": "checkout_upsell",
+      "decline_text": "No thanks, I like paying extra"
+    },
+    "subscription_trap": {
+      "target": "membership_cancellation",
+      "steps": 4
+    }
+  }
+}

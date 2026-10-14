@@ -1,0 +1,9 @@
+{
+  "expected_findings": [
+    {"pattern": "false_urgency_timer", "item_id": "atta"},
+    {"pattern": "drip_pricing", "item_id": "atta"},
+    {"pattern": "confirm_shaming", "item_id": "checkout"},
+    {"pattern": "basket_sneaking", "item_id": "checkout"},
+    {"pattern": "subscription_trap", "item_id": "membership"}
+  ]
+}

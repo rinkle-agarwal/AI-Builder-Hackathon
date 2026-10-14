@@ -1,0 +1,6 @@
+{
+  "name": "TrustLens AI",
+  "description": "Continuous dark pattern detection and CCPA compliance dashboard for e-commerce platforms.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,156 @@
+{
+  "run_id": "RUN-1013-222413",
+  "findings_count": 5,
+  "findings": [
+    {
+      "pattern": "drip_pricing",
+      "item_id": "multi_item_cart",
+      "step": "cart",
+      "description": "Hidden packaging & handling fee (+₹30) injected in cart across 3 items without upfront storefront disclosure",
+      "evidence": {
+        "items_subtotal": 756,
+        "hidden_fee": 30,
+        "cart_total": 786
+      },
+      "screenshots": [
+        "/runs/RUN-1013-222413/01_dp1_drip_pricing_before.png",
+        "/runs/RUN-1013-222413/02_dp1_drip_pricing_after.png"
+      ],
+      "pattern_name": "Drip Pricing",
+      "before_screenshot": "/runs/RUN-1013-222413/01_dp1_drip_pricing_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/02_dp1_drip_pricing_after.png"
+    },
+    {
+      "pattern": "false_urgency_timer",
+      "item_id": "storefront_banner",
+      "step": "home_catalogue",
+      "description": "Manipulative countdown timer resets upon page reload (was 09:50, ticked to 09:47, reset to 10:00)",
+      "evidence": {
+        "timer_at_start": "09:50",
+        "timer_after_tick": "09:47",
+        "timer_after_reload": "10:00"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-222413/03_dp2_false_urgency_before.png",
+        "/runs/RUN-1013-222413/04_dp2_false_urgency_after.png"
+      ],
+      "pattern_name": "False Urgency",
+      "before_screenshot": "/runs/RUN-1013-222413/03_dp2_false_urgency_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/04_dp2_false_urgency_after.png"
+    },
+    {
+      "pattern": "confirm_shaming",
+      "item_id": "checkout_upsell",
+      "step": "checkout",
+      "description": "Manipulative guilt copy on upsell decline button: \"No thanks, I like paying extra\"",
+      "evidence": {
+        "decline_button_text": "No thanks, I like paying extra"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-222413/05_confirmshaming_before.png",
+        "/runs/RUN-1013-222413/06_confirmshaming_after.png"
+      ],
+      "pattern_name": "Confirmshaming",
+      "before_screenshot": "/runs/RUN-1013-222413/05_confirmshaming_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/06_confirmshaming_after.png"
+    },
+    {
+      "pattern": "basket_sneaking",
+      "item_id": "checkout_payment",
+      "step": "payment",
+      "description": "Unsolicited add-on automatically pre-selected by default: Donate ₹10 to FreshCart Foundation",
+      "evidence": {
+        "sneaked_item": "Donate ₹10 to FreshCart Foundation",
+        "price": 10,
+        "pre_selected": true
+      },
+      "screenshots": [
+        "/runs/RUN-1013-222413/07_basket_sneaking_before.png",
+        "/runs/RUN-1013-222413/08_basket_sneaking_after.png"
+      ],
+      "pattern_name": "Basket Sneaking",
+      "before_screenshot": "/runs/RUN-1013-222413/07_basket_sneaking_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/08_basket_sneaking_after.png"
+    },
+    {
+      "pattern": "subscription_trap",
+      "item_id": "membership_cancellation",
+      "step": "account_cancellation",
+      "description": "Asymmetric cancellation architecture: 1-click enroll vs 4-screen retention labyrinth requiring typing 'CANCEL'",
+      "evidence": {
+        "friction_screens": 4,
+        "typing_barrier": "CANCEL",
+        "enroll_clicks": 1,
+        "cancel_clicks": 5
+      },
+      "screenshots": [
+        "/runs/RUN-1013-222413/09_subscription_trap_before.png",
+        "/runs/RUN-1013-222413/10_subscription_trap_after.png"
+      ],
+      "pattern_name": "Subscription Trap",
+      "before_screenshot": "/runs/RUN-1013-222413/09_subscription_trap_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/10_subscription_trap_after.png"
+    }
+  ],
+  "dark_pattern_pairs": [
+    {
+      "pattern": "Drip Pricing",
+      "pattern_id": "drip_pricing",
+      "before_screenshot": "/runs/RUN-1013-222413/01_dp1_drip_pricing_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/02_dp1_drip_pricing_after.png",
+      "description": "Hidden packaging & handling fee (+₹30) injected in cart across 3 items without upfront storefront disclosure",
+      "evidence": {
+        "items_subtotal": 756,
+        "hidden_fee": 30,
+        "cart_total": 786
+      }
+    },
+    {
+      "pattern": "False Urgency",
+      "pattern_id": "false_urgency_timer",
+      "before_screenshot": "/runs/RUN-1013-222413/03_dp2_false_urgency_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/04_dp2_false_urgency_after.png",
+      "description": "Manipulative countdown timer resets upon page reload (was 09:50, ticked to 09:47, reset to 10:00)",
+      "evidence": {
+        "timer_at_start": "09:50",
+        "timer_after_tick": "09:47",
+        "timer_after_reload": "10:00"
+      }
+    },
+    {
+      "pattern": "Confirmshaming",
+      "pattern_id": "confirm_shaming",
+      "before_screenshot": "/runs/RUN-1013-222413/05_confirmshaming_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/06_confirmshaming_after.png",
+      "description": "Manipulative guilt copy on upsell decline button: \"No thanks, I like paying extra\"",
+      "evidence": {
+        "decline_button_text": "No thanks, I like paying extra"
+      }
+    },
+    {
+      "pattern": "Basket Sneaking",
+      "pattern_id": "basket_sneaking",
+      "before_screenshot": "/runs/RUN-1013-222413/07_basket_sneaking_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/08_basket_sneaking_after.png",
+      "description": "Unsolicited add-on automatically pre-selected by default: Donate ₹10 to FreshCart Foundation",
+      "evidence": {
+        "sneaked_item": "Donate ₹10 to FreshCart Foundation",
+        "price": 10,
+        "pre_selected": true
+      }
+    },
+    {
+      "pattern": "Subscription Trap",
+      "pattern_id": "subscription_trap",
+      "before_screenshot": "/runs/RUN-1013-222413/09_subscription_trap_before.png",
+      "after_screenshot": "/runs/RUN-1013-222413/10_subscription_trap_after.png",
+      "description": "Asymmetric cancellation architecture: 1-click enroll vs 4-screen retention labyrinth requiring typing 'CANCEL'",
+      "evidence": {
+        "friction_screens": 4,
+        "typing_barrier": "CANCEL",
+        "enroll_clicks": 1,
+        "cancel_clicks": 5
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "run_id": "RUN-1013-144451",
+  "timestamp": "2026-10-13T14:45:06.794469",
+  "base_url": "http://localhost:3000/freshcart.html",
+  "findings_count": 6,
+  "screenshots": [
+    "/runs/RUN-1013-144451/001_01_listing_home.png",
+    "/runs/RUN-1013-144451/002_02_urgency_timer.png",
+    "/runs/RUN-1013-144451/003_02_scarcity_atta.png",
+    "/runs/RUN-1013-144451/004_03_added_atta.png",
+    "/runs/RUN-1013-144451/005_02_scarcity_dal.png",
+    "/runs/RUN-1013-144451/006_03_added_dal.png",
+    "/runs/RUN-1013-144451/007_02_scarcity_butter.png",
+    "/runs/RUN-1013-144451/008_03_added_butter.png",
+    "/runs/RUN-1013-144451/009_04_cart_summary.png",
+    "/runs/RUN-1013-144451/010_05_upsell_confirm_shaming.png",
+    "/runs/RUN-1013-144451/011_06_payment_gateway.png",
+    "/runs/RUN-1013-144451/012_07_basket_sneaking_donation.png",
+    "/runs/RUN-1013-144451/013_08_order_placed.png",
+    "/runs/RUN-1013-144451/014_09_account_overview.png"
+  ],
+  "findings": [
+    {
+      "pattern": "false_urgency_scarcity",
+      "item_id": "atta",
+      "step": "product_listing",
+      "description": "Artificial scarcity claim 'Only 2 left!' displayed on atta",
+      "evidence": {
+        "sku": "atta",
+        "label": "Only 2 left!"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144451/003_02_scarcity_atta.png"
+      ],
+      "detected_at": "2026-10-13T14:44:54.592900"
+    },
+    {
+      "pattern": "false_urgency_scarcity",
+      "item_id": "dal",
+      "step": "product_listing",
+      "description": "Artificial scarcity claim 'Only 2 left!' displayed on dal",
+      "evidence": {
+        "sku": "dal",
+        "label": "Only 2 left!"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144451/005_02_scarcity_dal.png"
+      ],
+      "detected_at": "2026-10-13T14:44:56.224273"
+    },
+    {
+      "pattern": "false_urgency_scarcity",
+      "item_id": "butter",
+      "step": "product_listing",
+      "description": "Artificial scarcity claim 'Only 2 left!' displayed on butter",
+      "evidence": {
+        "sku": "butter",
+        "label": "Only 2 left!"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144451/007_02_scarcity_butter.png"
+      ],
+      "detected_at": "2026-10-13T14:44:57.858346"
+    },
+    {
+      "pattern": "drip_pricing",
+      "item_id": "cart",
+      "step": "cart_review",
+      "description": "Delivery charge omitted from cart subtotal; only disclosed downstream at payment",
+      "evidence": {
+        "cart_displayed_total": 499.0,
+        "omitted_charges": [
+          "delivery_fee"
+        ]
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144451/009_04_cart_summary.png"
+      ],
+      "detected_at": "2026-10-13T14:45:00.665335"
+    },
+    {
+      "pattern": "confirm_shaming",
+      "item_id": "checkout_upsell",
+      "step": "upsell_modal",
+      "description": "Decline action utilizes manipulative guilt copy: \"No thanks, I like paying extra\"",
+      "evidence": {
+        "decline_button_text": "No thanks, I like paying extra"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144451/010_05_upsell_confirm_shaming.png"
+      ],
+      "detected_at": "2026-10-13T14:45:02.196414"
+    },
+    {
+      "pattern": "basket_sneaking",
+      "item_id": "checkout_addons",
+      "step": "payment_checkout",
+      "description": "Charity donation fee pre-checked without affirmative consumer opt-in",
+      "evidence": {
+        "sneaked_amount": 10,
+        "label": "Donate ₹10 to FreshCart Foundation",
+        "pre_selected": true
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144451/012_07_basket_sneaking_donation.png"
+      ],
+      "detected_at": "2026-10-13T14:45:03.792915"
+    }
+  ]
+}

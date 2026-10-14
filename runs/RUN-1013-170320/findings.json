@@ -1,0 +1,76 @@
+{
+  "run_id": "RUN-1013-170320",
+  "findings_count": 5,
+  "findings": [
+    {
+      "pattern": "false_urgency_timer",
+      "item_id": "basmati-5kg",
+      "step": "product_page",
+      "description": "Timer resets on reload (was 09:59, after reload 10:00)",
+      "evidence": {
+        "timer_at_start": "09:59",
+        "timer_after_3s": "09:56",
+        "timer_after_reload": "10:00",
+        "difference_observed": "Reset back to initial duration"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-170320/004_timer_basmati-5kg_t0.png",
+        "/runs/RUN-1013-170320/005_timer_basmati-5kg_t3.png",
+        "/runs/RUN-1013-170320/006_timer_basmati-5kg_reload.png"
+      ]
+    },
+    {
+      "pattern": "drip_pricing",
+      "item_id": "atta-5kg",
+      "step": "cart",
+      "description": "Hidden fee in cart: Handling & packaging fee",
+      "evidence": {
+        "price_before": 249,
+        "price_after": 279,
+        "difference": 30
+      },
+      "screenshots": [
+        "/runs/RUN-1013-170320/011_cart_fee.png"
+      ]
+    },
+    {
+      "pattern": "confirm_shaming",
+      "item_id": "checkout",
+      "step": "checkout",
+      "description": "Manipulative guilt copy on decline button: \"No thanks, I like paying extra\"",
+      "evidence": {
+        "decline_button_text": "No thanks, I like paying extra"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-170320/012_checkout.png"
+      ]
+    },
+    {
+      "pattern": "basket_sneaking",
+      "item_id": "checkout",
+      "step": "checkout",
+      "description": "Pre-selected uninvited add-on item in checkout: Donate ₹10 to FreshCart Foundation",
+      "evidence": {
+        "sneaked_item": "Donate ₹10 to FreshCart Foundation",
+        "price": 10,
+        "pre_selected": true
+      },
+      "screenshots": [
+        "/runs/RUN-1013-170320/012_checkout.png"
+      ]
+    },
+    {
+      "pattern": "subscription_trap",
+      "item_id": "membership",
+      "step": "account_cancellation",
+      "description": "Asymmetric cancellation architecture: 1-click enroll vs 4-screen labyrinth requiring typing 'CANCEL'",
+      "evidence": {
+        "friction_screens": 4,
+        "typing_barrier": "CANCEL"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-170320/013_cancellation_maze.png"
+      ]
+    }
+  ]
+}

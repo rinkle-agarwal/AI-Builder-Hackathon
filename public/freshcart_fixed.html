@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FreshCart Test Store (audit fixes applied)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: sticky store header over a single content column; two-column (content + bill) on cart and payment, stacked on phones. */
+:root{
+  --bg:#F2F6F3; --surface:#FFFFFF; --ink:#13251E; --muted:#5A6B63; --line:#DCE5DF;
+  --brand:#0B6B4F; --brand-ink:#FFFFFF; --brand-soft:#E1F1EA;
+  --accent:#F2B705; --accent-ink:#2A2000;
+  --urgent-bg:#FDECE9; --urgent-ink:#A82418; --ok:#17794F; --shadow:0 1px 2px rgba(19,37,30,.08),0 6px 18px rgba(19,37,30,.06);
+  --font-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --font-body:'Public Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1612; --surface:#15221C; --ink:#E7F0EB; --muted:#9DB1A7; --line:#25392F;
+  --brand:#41C197; --brand-ink:#062419; --brand-soft:#1B3328;
+  --accent:#F2C230; --accent-ink:#2A2000;
+  --urgent-bg:#3A1C19; --urgent-ink:#FF9A8F; --ok:#5FD8A6; --shadow:none; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1612; --surface:#15221C; --ink:#E7F0EB; --muted:#9DB1A7; --line:#25392F;
+  --brand:#41C197; --brand-ink:#062419; --brand-soft:#1B3328;
+  --accent:#F2C230; --accent-ink:#2A2000;
+  --urgent-bg:#3A1C19; --urgent-ink:#FF9A8F; --ok:#5FD8A6; --shadow:none; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;min-height:100vh}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap;padding-block:12px}
+.logo{font-family:var(--font-display);font-weight:800;font-size:26px;text-decoration:none;letter-spacing:-.02em;color:var(--brand)}
+.logo b{color:var(--ink);font-weight:800}
+.deliver{font-size:13px;color:var(--muted);min-width:0}
+.deliver b{color:var(--ink)}
+.search{display:flex;gap:8px;flex:1 1 280px;min-width:0}
+.search input{flex:1;min-width:0;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
+nav{display:flex;gap:18px;align-items:center;font-weight:600}
+nav a{text-decoration:none;display:flex;gap:6px;align-items:center}
+.badge{background:var(--brand);color:var(--brand-ink);border-radius:999px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:12px;padding-inline:6px;font-variant-numeric:tabular-nums}
+.btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sm{padding:7px 16px}
+.btn.big{padding:14px 22px;font-size:16px;width:100%}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.linkbtn{background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+main{padding-block:22px 80px}
+h1{font-family:var(--font-display);font-size:30px;line-height:1.1;letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+h2{font-family:var(--font-display);font-size:20px;margin:0 0 10px}
+.sub{color:var(--muted);margin:0 0 18px}
+.urgent{background:var(--urgent-bg);color:var(--urgent-ink);border-radius:10px;padding:10px 14px;font-weight:700;margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cd{font-variant-numeric:tabular-nums;font-family:var(--font-display);font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile{aspect-ratio:4/3;border-radius:10px;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:38px;letter-spacing:-.03em;
+  background:color-mix(in oklab,hsl(var(--h) 55% 50%) 22%,var(--surface));color:color-mix(in oklab,hsl(var(--h) 60% 42%) 65%,var(--ink));margin-bottom:6px}
+.card h3{margin:0;font-size:15px;font-weight:600}
+.unit{color:var(--muted);font-size:13px}
+.low{color:var(--urgent-ink);font-weight:700;font-size:13px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
+.price{font-weight:700;font-size:17px;font-variant-numeric:tabular-nums}
+.step{display:inline-flex;align-items:center;background:var(--brand);color:var(--brand-ink);border-radius:10px;overflow:hidden}
+.step button{background:none;border:0;color:inherit;width:34px;height:34px;font-size:18px;cursor:pointer}
+.step span{min-width:24px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.line{display:flex;gap:12px;align-items:center;padding-block:10px;border-bottom:1px solid var(--line)}
+.line:last-child{border-bottom:0}
+.line .tile{width:56px;aspect-ratio:1;font-size:20px;margin:0;flex:none}
+.line .grow{flex:1;min-width:0}
+.bill{display:flex;flex-direction:column;gap:8px}
+.bill .r{display:flex;justify-content:space-between;gap:10px;font-variant-numeric:tabular-nums}
+.bill .total{border-top:1.5px dashed var(--line);padding-top:10px;font-weight:700;font-size:17px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.tiny{font-size:11.5px}
+.addon{display:flex;gap:10px;align-items:flex-start;padding:10px 0;cursor:pointer}
+.addon input{margin-top:4px;width:18px;height:18px;accent-color:var(--brand)}
+.opt{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;margin-bottom:8px}
+.opt input{accent-color:var(--brand);width:18px;height:18px}
+.pill{display:inline-block;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
+.modal{position:fixed;inset:0;background:rgba(5,12,9,.6);display:grid;place-items:center;z-index:40;padding:16px}
+.dialog{background:var(--surface);border-radius:18px;max-width:440px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.dialog h2{font-size:24px;line-height:1.1;margin-bottom:8px}
+.ben{margin:10px 0 18px;padding-left:18px}
+.ben li{margin-bottom:4px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;z-index:60;font-weight:600}
+.foot{border-top:1px solid var(--line);padding-block:20px 90px;color:var(--muted);font-size:12.5px}
+.helplinks{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px}
+.helplinks a,.helplinks button{font-size:12px;color:var(--muted)}
+input[type=text]{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
+.qa-btn{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.qa{position:fixed;left:16px;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:50;width:min(380px,calc(100vw - 32px));max-height:calc(100vh - 120px);overflow:auto;background:var(--surface);border:1.5px solid var(--ink);border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.qa h2{font-size:17px;margin-bottom:4px}
+.qa .f{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.qa .f input{margin-top:3px;width:18px;height:18px;accent-color:var(--urgent-ink)}
+.qa .f b{display:block;font-size:14px}
+.qa .f span{display:block;color:var(--muted);font-size:12px}
+.qa .f em{font-style:normal;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--urgent-bg);color:var(--urgent-ink);white-space:nowrap}
+.qa .f em.ok{background:var(--brand-soft);color:var(--ok)}
+.qa .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+@media (max-width:820px){.cols{grid-template-columns:minmax(0,1fr)}h1{font-size:26px}.deliver{order:3;flex-basis:100%}}
+@media (prefers-reduced-motion:no-preference){.btn{transition:filter .15s}}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function(){
+'use strict';
+var PRODUCTS=[
+ {id:'atta',name:'Whole Wheat Atta',unit:'5 kg',price:249,h:38,fake:true,g:'At'},
+ {id:'dal',name:'Toor Dal',unit:'1 kg',price:150,h:28,fake:true,g:'Td'},
+ {id:'butter',name:'Salted Butter',unit:'500 g',price:100,h:48,fake:true,g:'Bu'},
+ {id:'milk',name:'Full Cream Milk',unit:'1 L',price:68,h:205,fake:false,g:'Mk'},
+ {id:'eggs',name:'Farm Eggs',unit:'12 pcs',price:96,h:30,fake:false,g:'Eg'},
+ {id:'rice',name:'Basmati Rice',unit:'5 kg',price:449,h:50,fake:false,g:'Ba'},
+ {id:'banana',name:'Bananas',unit:'1 kg',price:58,h:52,fake:false,g:'Bn'},
+ {id:'tomato',name:'Tomatoes',unit:'1 kg',price:42,h:8,fake:false,g:'To'},
+ {id:'onion',name:'Onions',unit:'2 kg',price:76,h:330,fake:false,g:'On'},
+ {id:'paneer',name:'Paneer',unit:'200 g',price:92,h:60,fake:false,g:'Pa'},
+ {id:'oil',name:'Sunflower Oil',unit:'1 L',price:148,h:45,fake:false,g:'Oi'},
+ {id:'tea',name:'Assam Tea Leaves',unit:'500 g',price:210,h:20,fake:false,g:'Te'}
+];
+var FAULTS=[
+ {k:'drip',name:'Drip pricing',where:'Cart to payment',desc:'Delivery fee shown only on the payment page.'},
+ {k:'sneak',name:'Basket sneaking',where:'Payment',desc:'Donation is pre-ticked and added to the total.'},
+ {k:'urgency',name:'False urgency',where:'Home, cart, payment',desc:'Countdown that restarts at zero; fixed "Only 2 left" labels.'},
+ {k:'subtrap',name:'Subscription trap',where:'Account, membership',desc:'One click to join Plus, six clicks to cancel.'},
+ {k:'shame',name:'Confirm shaming',where:'Checkout upsell',desc:'Decline link says "No thanks, I like paying extra".'}
+];
+var DECOY={k:'bug',name:'Decoy: stale cart badge',where:'Header',desc:'A plain bug, not a dark pattern. Badge ignores + and - changes.'};
+var SCARCITY_AT_MOST=3; /* front-end rule: show a true 'Only N left!' when stock is this low */
+var INV={"items": [{"sku": "atta", "available_units": 178}, {"sku": "dal", "available_units": 122}, {"sku": "butter", "available_units": 231}, {"sku": "milk", "available_units": 388}, {"sku": "eggs", "available_units": 91}, {"sku": "rice", "available_units": 56}, {"sku": "banana", "available_units": 72}, {"sku": "tomato", "available_units": 112}, {"sku": "onion", "available_units": 86}, {"sku": "paneer", "available_units": 2}, {"sku": "oil", "available_units": 62}, {"sku": "tea", "available_units": 37}]};
+function avail(id){var r=INV.items.filter(function(i){return i.sku===id})[0];return r?r.available_units:99}
+function scarcity(p){var a=avail(p.id);if(a<=SCARCITY_AT_MOST)return 'Only '+a+' left!';if(F.urgency&&p.fake)return 'Only 2 left!';return ''}
+var DELIVERY=49, DONATION=10, PLUS_PRICE=149;
+
+function ss(k,d){try{var v=sessionStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function sset(k,v){try{sessionStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function ls(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function lset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+var F=Object.assign({drip:false,sneak:false,urgency:false,subtrap:false,shame:false,bug:true},ls('fc2_faults',{}));
+var QA=true;
+try{
+  var qs=new URLSearchParams(location.search);
+  var fl=qs.get('faults');
+  if(fl){(fl==='all'?FAULTS.map(function(f){return f.k}):fl.split(',')).forEach(function(k){if(k in F)F[k]=true})}
+  var fx=qs.get('fixed');
+  if(fx){(fx==='all'?FAULTS.map(function(f){return f.k}):fx.split(',')).forEach(function(k){if(k in F)F[k]=false})}
+  if(qs.get('bug')==='0')F.bug=false;
+  if(qs.get('bug')==='1')F.bug=true;
+  if(qs.get('qa')==='0')QA=false;
+}catch(e){}
+
+var DEF={cart:{},plus:false,plusEnds:'',q:'',route:'/',upsell:false,upsellSeen:false,donate:false,payInit:false,order:null,pay:'upi',reason:'',askCancel:false,badge:0,orders:[]};
+var S=Object.assign({},DEF,ss('fc2_state',{}));
+var T0=Date.now(), qaOpen=false, toast='';
+function save(){sset('fc2_state',S)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function inr(n){return '₹'+Number(n).toLocaleString('en-IN')}
+function prod(id){return PRODUCTS.filter(function(p){return p.id===id})[0]}
+function count(){return Object.keys(S.cart).reduce(function(a,k){return a+S.cart[k]},0)}
+function itemTotal(){return Object.keys(S.cart).reduce(function(a,k){return a+prod(k).price*S.cart[k]},0)}
+function delivery(){return count()===0?0:(S.plus?0:DELIVERY)}
+function badgeNum(){return F.bug?S.badge:count()}
+function cdText(p){var r=p-Math.floor(((Date.now()-T0)/1000)%p);var m=Math.floor(r/60),s=r%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
+function plusEndDate(days){var d=new Date(Date.now()+days*86400000);return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+
+/* ---------- views ---------- */
+function header(){
+  return '<header class="top"><div class="wrap bar">'+
+  '<a class="logo" href="#/" data-nav="/">Fresh<b>Cart</b></a>'+
+  '<div class="deliver">Delivering to <b>Indiranagar, Bengaluru</b> in 12 min'+(F.drip?'':' · Delivery fee '+inr(DELIVERY)+', free with Plus')+'</div>'+
+  '<form class="search" id="searchForm" role="search"><label class="sr" for="q">Search groceries</label>'+
+  '<input id="q" type="search" placeholder="Search atta, dal, milk" value="'+esc(S.q)+'" autocomplete="off"><button class="btn" type="submit" id="searchBtn">Search</button></form>'+
+  '<nav><a href="#/account" data-nav="/account" id="navAccount">Account</a>'+
+  '<a href="#/cart" data-nav="/cart" id="navCart">Cart <span class="badge" id="cartBadge">'+badgeNum()+'</span></a></nav></div></header>';
+}
+function urgentBar(p,text){
+  if(!F.urgency)return '';
+  return '<div class="urgent" role="status"><span>'+text+'</span><span class="cd" data-p="'+p+'">'+cdText(p)+'</span></div>';
+}
+function ctl(p){
+  var q=S.cart[p.id]||0;
+  if(!q)return '<button class="btn sm" data-act="add" data-id="'+p.id+'" id="add-'+p.id+'">Add</button>';
+  return '<div class="step"><button data-act="dec" data-id="'+p.id+'" aria-label="Remove one '+esc(p.name)+'">−</button><span aria-live="polite">'+q+'</span><button data-act="inc" data-id="'+p.id+'" aria-label="Add one '+esc(p.name)+'">+</button></div>';
+}
+function home(){
+  var q=S.q.trim().toLowerCase();
+  var list=PRODUCTS.filter(function(p){return !q||p.name.toLowerCase().indexOf(q)>-1});
+  var cards=list.map(function(p){
+    return '<article class="card"><div class="tile" style="--h:'+p.h+'" aria-hidden="true">'+p.g+'</div>'+
+    '<h3>'+p.name+'</h3><div class="unit">'+p.unit+'</div>'+
+    (scarcity(p)?'<div class="low">'+scarcity(p)+'</div>':'')+
+    '<div class="row"><span class="price">'+inr(p.price)+'</span>'+ctl(p)+'</div></article>';
+  }).join('');
+  return urgentBar(600,'Flash prices end in')+
+   '<h1>'+(q?'Results for “'+esc(S.q.trim())+'”':'Groceries in 12 minutes')+'</h1>'+
+   '<p class="sub">'+(q?list.length+' item'+(list.length===1?'':'s')+' found':'Atta, dal, dairy and fresh produce from stores near you.')+'</p>'+
+   (list.length?'<div class="grid">'+cards+'</div>':'<div class="panel">Nothing matched. Try “atta”, “dal” or “milk”.</div>');
+}
+function cartView(){
+  var keys=Object.keys(S.cart);
+  if(!keys.length)return '<h1>Your cart</h1><div class="panel"><p>Your cart is empty.</p><a class="btn" href="#/" data-nav="/" style="display:inline-block;text-decoration:none">Browse groceries</a></div>';
+  var rows=keys.map(function(k){var p=prod(k);return '<div class="line"><div class="tile" style="--h:'+p.h+'" aria-hidden="true">'+p.g+'</div>'+
+    '<div class="grow"><b>'+p.name+'</b><div class="unit">'+p.unit+'</div></div>'+ctl(p)+'<b class="price" style="min-width:64px;text-align:right">'+inr(p.price*S.cart[k])+'</b></div>'}).join('');
+  var it=itemTotal(), d=delivery();
+  var bill='<div class="bill"><div class="r"><span>Item total</span><span>'+inr(it)+'</span></div>';
+  if(!F.drip){bill+='<div class="r"><span>Delivery fee</span><span>'+(S.plus?'Free with Plus':inr(d))+'</span></div>'}
+  bill+='<div class="r total"><span>To pay</span><span id="cartTotal">'+inr(F.drip?it:it+d)+'</span></div>'+
+        '<p class="tiny muted" style="margin:0">Taxes included.</p></div>';
+  return urgentBar(600,'Prices locked for')+'<h1>Your cart</h1><p class="sub">'+count()+' item'+(count()===1?'':'s')+' from FreshCart Indiranagar</p>'+
+   '<div class="cols"><div class="panel">'+rows+'</div><div class="panel"><h2>Bill details</h2>'+bill+
+   '<button class="btn big" data-act="checkout" id="checkoutBtn" style="margin-top:14px">Proceed to checkout</button></div></div>';
+}
+function upsellModal(){
+  var decline=F.shame
+    ? '<p style="text-align:center;margin:14px 0 0"><button class="linkbtn muted tiny" data-act="decline" id="declinePlus">No thanks, I like paying extra</button></p>'
+    : '<button class="btn big ghost" data-act="decline" id="declinePlus" style="margin-top:10px">No thanks</button>';
+  var accept=F.shame?'Yes, I want to save money!':'Start free trial';
+  return '<div class="modal" role="dialog" aria-modal="true" aria-labelledby="upT"><div class="dialog">'+
+   '<span class="pill">FreshCart Plus</span><h2 id="upT" style="margin-top:10px">Free delivery on every order</h2>'+
+   '<ul class="ben"><li>Zero delivery fee, all day</li><li>Members-only prices on staples</li><li>First 30 days free, then '+inr(PLUS_PRICE)+'/month</li></ul>'+
+   '<button class="btn big" data-act="accept" id="acceptPlus">'+accept+'</button>'+decline+'</div></div>';
+}
+function pay(){
+  if(!count())return '<h1>Checkout</h1><div class="panel">Your cart is empty. <a href="#/cart" data-nav="/cart">Back to cart</a></div>';
+  if(!S.payInit){S.donate=F.sneak;S.payInit=true;save()}
+  var it=itemTotal(), d=delivery(), don=S.donate?DONATION:0, tot=it+d+don;
+  var methods=[['upi','UPI'],['card','Debit or credit card'],['cod','Cash on delivery']].map(function(m){
+    return '<label class="opt"><input type="radio" name="pm" value="'+m[0]+'" '+(S.pay===m[0]?'checked':'')+'> '+m[1]+'</label>'}).join('');
+  var bill='<div class="bill"><div class="r"><span>Item total</span><span>'+inr(it)+'</span></div>'+
+    '<div class="r"><span>Delivery fee</span><span>'+(S.plus?'Free with Plus':inr(d))+'</span></div>'+
+    (don?'<div class="r"><span>Donation</span><span>'+inr(don)+'</span></div>':'')+
+    '<div class="r total"><span>Total to pay</span><span id="payTotal">'+inr(tot)+'</span></div></div>';
+  return urgentBar(300,'Complete payment within')+'<h1>Delivery and payment</h1><p class="sub">Step 2 of 2</p>'+
+   '<div class="cols"><div class="stack">'+
+   '<div class="panel"><h2>Delivering to</h2><b>Asha Rao</b><div class="muted">14 Lake Road, Indiranagar, Bengaluru 560038</div><div class="small muted" style="margin-top:6px">Arrives in about 12 minutes</div></div>'+
+   '<div class="panel"><h2>Payment method</h2>'+methods+'</div>'+
+   '<div class="panel"><h2>Add-ons</h2><label class="addon" for="donate"><input type="checkbox" id="donate" '+(S.donate?'checked':'')+'><span><b>Donate '+inr(DONATION)+' to FreshCart Foundation</b><br><span class="small muted">Funds school meals in Karnataka</span></span></label></div>'+
+   '</div><div class="panel"><h2>Bill details</h2>'+bill+
+   '<button class="btn big" data-act="place" id="payBtn" style="margin-top:14px">Pay '+inr(tot)+'</button>'+
+   '<p class="tiny muted" style="margin:8px 0 0;text-align:center">Demo store. No money is taken.</p></div></div>';
+}
+function orderView(){
+  var o=S.order; if(!o)return '<h1>No recent order</h1><a href="#/" data-nav="/">Back to shopping</a>';
+  return '<h1>Order placed</h1><p class="sub">Order '+o.id+' is on its way. Arrives in about 12 minutes.</p>'+
+   '<div class="panel" style="max-width:520px"><div class="bill"><div class="r"><span>Item total</span><span>'+inr(o.it)+'</span></div>'+
+   '<div class="r"><span>Delivery fee</span><span>'+(o.plus?'Free with Plus':inr(o.d))+'</span></div>'+
+   (o.don?'<div class="r"><span>Donation</span><span>'+inr(o.don)+'</span></div>':'')+
+   '<div class="r total"><span>Paid</span><span>'+inr(o.tot)+'</span></div></div>'+
+   (o.plus?'<p class="small muted">FreshCart Plus trial is active on this account.</p>':'')+
+   '<p><a href="#/account" data-nav="/account" id="toAccount">Go to your account</a></p></div>';
+}
+function account(){
+  var orders=S.orders.length?S.orders.map(function(o){return '<div class="line"><div class="grow"><b>'+o.id+'</b><div class="unit">'+o.n+' item'+(o.n===1?'':'s')+'</div></div><b>'+inr(o.tot)+'</b></div>'}).join(''):'<p class="muted" style="margin:0">No orders yet.</p>';
+  var plan;
+  if(!S.plus){
+    plan='<p style="margin:0 0 12px">Free delivery on every order. 30 days free, then '+inr(PLUS_PRICE)+'/month.</p><button class="btn" data-act="join" id="joinPlus">Start free trial</button>';
+  }else{
+    plan='<p style="margin:0 0 4px"><span class="pill">Active trial</span></p><p style="margin:8px 0 12px">Renews at '+inr(PLUS_PRICE)+'/month on '+esc(S.plusEnds)+'.</p>';
+    if(!F.subtrap){
+      plan+='<button class="btn" data-act="cancelNow" id="cancelPlus">Cancel membership</button>';
+    }
+  }
+  var help='<div class="helplinks"><a href="#/account" data-nav="/account">Contact us</a><a href="#/account" data-nav="/account">Privacy policy</a><a href="#/account" data-nav="/account">Terms of use</a><a href="#/account" data-nav="/account">Gift cards</a>'+
+    (F.subtrap&&S.plus?'<a href="#/membership" data-nav="/membership" id="manageMembership">Manage membership</a>':'')+'<a href="#/account" data-nav="/account">Sign out</a></div>';
+  return '<h1>Hi, Asha</h1><p class="sub">Test shopper account</p><div class="cols"><div class="stack"><div class="panel"><h2>Recent orders</h2>'+orders+'</div>'+
+   '<div class="panel"><h2>Saved address</h2><div class="muted">14 Lake Road, Indiranagar, Bengaluru 560038</div></div></div>'+
+   '<div class="stack"><div class="panel"><h2>FreshCart Plus</h2>'+plan+'</div><div class="panel"><h2>Help and settings</h2>'+help+'</div></div></div>';
+}
+function membership(){
+  if(!S.plus||!F.subtrap)return '<h1>Membership</h1><p><a href="#/account" data-nav="/account">Back to account</a></p>';
+  return '<h1>Your FreshCart Plus membership</h1><p class="sub">Trial renews at '+inr(PLUS_PRICE)+'/month on '+esc(S.plusEnds)+'.</p>'+
+   '<div class="panel" style="max-width:520px"><h2>What you get</h2><ul class="ben"><li>Zero delivery fee, all day</li><li>Members-only prices on staples</li><li>Priority slots on weekends</li></ul>'+
+   '<button class="btn big" data-act="keep" id="keepBenefits">Keep my benefits</button>'+
+   '<p style="text-align:center;margin:16px 0 0"><button class="linkbtn muted tiny" data-act="toReason" id="stillCancel">I still want to cancel</button></p></div>';
+}
+function reasonView(){
+  var rs=['Too expensive','I do not use it enough','Found a better service','Something else'];
+  return '<h1>Before you go</h1><p class="sub">Tell us why you are leaving. This step is required.</p><div class="panel" style="max-width:520px">'+
+   rs.map(function(r,i){return '<label class="opt"><input type="radio" name="reason" value="'+esc(r)+'" '+(S.reason===r?'checked':'')+'> '+r+'</label>'}).join('')+
+   '<button class="btn big" data-act="toOffer" id="reasonNext" '+(S.reason?'':'disabled')+'>Continue</button></div>';
+}
+function offerView(){
+  return '<h1>Wait, stay for half price</h1><p class="sub">Keep Plus at '+inr(75)+'/month for the next 3 months.</p><div class="panel" style="max-width:520px">'+
+   '<button class="btn big" data-act="keep" id="claimOffer">Claim 50% off</button>'+
+   '<p style="text-align:center;margin:16px 0 0"><button class="linkbtn muted tiny" data-act="toConfirm" id="continueCancel">No thanks, continue cancelling</button></p></div>';
+}
+function confirmView(){
+  return '<h1>Confirm cancellation</h1><p class="sub">Type CANCEL in capital letters to end your membership.</p><div class="panel" style="max-width:520px">'+
+   '<label class="sr" for="cancelText">Type CANCEL</label><input type="text" id="cancelText" placeholder="CANCEL" autocomplete="off">'+
+   '<button class="btn big" data-act="finalCancel" id="finalCancel" style="margin-top:12px" disabled>Confirm cancellation</button></div>';
+}
+function doneView(){
+  return '<h1>Membership cancelled</h1><p class="sub">Free delivery has ended. A delivery fee of '+inr(DELIVERY)+' now applies to each order.</p><a href="#/account" data-nav="/account" id="backAccount">Back to account</a>';
+}
+function qaPanel(){
+  var rows=FAULTS.concat([DECOY]).map(function(f){
+    return '<label class="f"><input type="checkbox" data-fault="'+f.k+'" '+(F[f.k]?'checked':'')+'><span><b>'+f.name+'</b><span>'+f.where+'. '+f.desc+'</span></span><em class="'+(F[f.k]?'':'ok')+'">'+(F[f.k]?(f.k==='bug'?'Bug on':'Fault on'):'Fixed')+'</em></label>'}).join('');
+  return '<button class="qa-btn" id="qaBtn" aria-expanded="'+qaOpen+'">Test controls</button>'+
+   (qaOpen?'<aside class="qa" aria-label="Test fixture controls"><h2>Test fixture controls</h2><p class="small muted" style="margin:0 0 8px">For whoever runs the test. FreshCart is a fictional store with deliberate faults. A ticked box means the fault is live.</p>'+rows+
+   '<div class="acts"><button class="btn sm" data-act="allOn" id="allOn">All faults on</button><button class="btn sm ghost" data-act="allFixed" id="allFixed">All fixed (clean control)</button>'+
+   '<button class="btn sm ghost" data-act="demoBasket" id="demoBasket">Add demo basket</button><button class="btn sm ghost" data-act="reset" id="resetStore">Reset store</button></div></aside>':'');
+}
+function footer(){
+  return '<footer class="foot"><div class="wrap">FreshCart is a fictional demo store built as a test fixture for TrustLens AI. This build has the fixes from audit RUN-1014-105217 applied. The earlier faults can be switched back on from Test controls. No real orders, payments or memberships exist.'+
+  '</div></footer>';
+}
+
+/* ---------- render ---------- */
+function render(){
+  var r=S.route, body;
+  if(r==='/cart')body=cartView();
+  else if(r==='/pay')body=pay();
+  else if(r==='/order')body=orderView();
+  else if(r==='/account')body=account();
+  else if(r==='/membership')body=membership();
+  else if(r==='/cancel/reason')body=reasonView();
+  else if(r==='/cancel/offer')body=offerView();
+  else if(r==='/cancel/confirm')body=confirmView();
+  else if(r==='/cancel/done')body=doneView();
+  else body=home();
+  var act=document.activeElement&&document.activeElement.id;
+  document.getElementById('app').innerHTML=header()+'<main class="wrap">'+body+'</main>'+footer()+
+    (S.upsell?upsellModal():'')+(QA?qaPanel():'')+(toast?'<div class="toast" role="status">'+esc(toast)+'</div>':'');
+  if(act){var el=document.getElementById(act);if(el&&act!=='q')el.focus({preventScroll:true})}
+  save();
+}
+function go(r){
+  S.route=r;
+  try{if(location.hash!=='#'+r)location.hash=r}catch(e){}
+  render();window.scrollTo(0,0);
+}
+function say(m){toast=m;render();setTimeout(function(){toast='';render()},3500)}
+
+/* ---------- actions ---------- */
+function addItem(id){S.cart[id]=1;S.badge=count()}
+function place(){
+  var it=itemTotal(),d=delivery(),don=S.donate?DONATION:0,tot=it+d+don;
+  var id='FC'+(100200+S.orders.length+1);
+  S.order={id:id,it:it,d:d,don:don,tot:tot,plus:S.plus};
+  S.orders.unshift({id:id,n:count(),tot:tot});
+  S.cart={};S.badge=0;S.payInit=false;S.donate=false;S.upsellSeen=false;
+  go('/order');
+}
+var ACTS={
+ add:function(el){addItem(el.dataset.id);render()},
+ inc:function(el){var id=el.dataset.id;if(S.cart[id]>=avail(id)){say('Only '+avail(id)+' available.');return}S.cart[id]++;render()},
+ dec:function(el){var id=el.dataset.id;S.cart[id]--;if(S.cart[id]<=0)delete S.cart[id];render()},
+ checkout:function(){if(!count())return;if(!S.plus&&!S.upsellSeen){S.upsell=true;render()}else go('/pay')},
+ accept:function(){S.plus=true;S.plusEnds=plusEndDate(30);S.upsell=false;S.upsellSeen=true;go('/pay')},
+ decline:function(){S.upsell=false;S.upsellSeen=true;go('/pay')},
+ place:place,
+ join:function(){S.plus=true;S.plusEnds=plusEndDate(30);render();say('Welcome to FreshCart Plus. Your free trial has started.')},
+ cancelAsk:function(){S.askCancel=true;render()},
+ cancelKeep:function(){S.askCancel=false;render()},
+ cancelConfirm:function(){S.plus=false;S.askCancel=false;render();say('Membership cancelled.')},
+ cancelNow:function(){S.plus=false;S.askCancel=false;render();say('Membership cancelled. Delivery fee of '+inr(DELIVERY)+' now applies.')},
+ keep:function(){go('/account')},
+ toReason:function(){go('/cancel/reason')},
+ toOffer:function(){if(S.reason)go('/cancel/offer')},
+ toConfirm:function(){go('/cancel/confirm')},
+ finalCancel:function(){S.plus=false;S.reason='';go('/cancel/done')},
+ allOn:function(){FAULTS.concat([DECOY]).forEach(function(f){F[f.k]=true});lset('fc2_faults',F);render()},
+ allFixed:function(){FAULTS.concat([DECOY]).forEach(function(f){F[f.k]=false});lset('fc2_faults',F);render()},
+ demoBasket:function(){S.cart={atta:1,dal:1,butter:1};S.badge=3;go('/cart')},
+ reset:function(){var keep=S.route;S=Object.assign({},DEF);go('/')}
+};
+document.addEventListener('click',function(e){
+  var a=e.target.closest('a[data-nav]');
+  if(a){e.preventDefault();go(a.dataset.nav);return}
+  if(e.target.closest('#qaBtn')){qaOpen=!qaOpen;render();return}
+  var b=e.target.closest('[data-act]');
+  if(b&&ACTS[b.dataset.act]){e.preventDefault();ACTS[b.dataset.act](b)}
+});
+document.addEventListener('submit',function(e){
+  if(e.target.id==='searchForm'){e.preventDefault();S.q=document.getElementById('q').value;go('/')}
+});
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.id==='donate'){S.donate=t.checked;render()}
+  else if(t.name==='pm'){S.pay=t.value;save()}
+  else if(t.name==='reason'){S.reason=t.value;var n=document.getElementById('reasonNext');if(n)n.disabled=false;save()}
+  else if(t.dataset&&t.dataset.fault){F[t.dataset.fault]=t.checked;lset('fc2_faults',F);render()}
+});
+document.addEventListener('input',function(e){
+  if(e.target.id==='cancelText'){document.getElementById('finalCancel').disabled=(e.target.value!=='CANCEL')}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){if(S.upsell){S.upsell=false;render()}else if(qaOpen){qaOpen=false;render()}}
+});
+window.addEventListener('hashchange',function(){
+  var h=location.hash.slice(1)||'/';
+  if(h!==S.route){S.route=h;render();window.scrollTo(0,0)}
+});
+setInterval(function(){
+  var els=document.querySelectorAll('.cd');
+  for(var i=0;i<els.length;i++)els[i].textContent=cdText(+els[i].dataset.p);
+},1000);
+
+try{var h0=location.hash.slice(1);if(h0)S.route=h0}catch(e){}
+render();
+})();
+</script>
+
+</body>
+</html>

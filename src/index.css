@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #0A1C3B;
+  --color-navy-900: #102A56;
+  --color-navy-800: #183A73;
+  --color-navy-700: #234E96;
+  --color-corp-blue: #2F6FA3;
+  --color-corp-blue-light: #EAF4F8;
+  --color-corp-blue-hover: #265B86;
+  --color-neutral-dark: #1B2B45;
+  --color-neutral-muted: #5B6B82;
+  --color-neutral-subtle: #899BB0;
+  --color-neutral-border: #D6E0EA;
+  --color-neutral-surface: #F8FAFC;
+  --color-neutral-bg: #F4F7FB;
+  --color-compliant: #1E7B53;
+  --color-compliant-bg: #E8F5EE;
+  --color-compliant-border: #C2E7D3;
+  --color-noncompliant: #B3261E;
+  --color-noncompliant-bg: #FDF2F2;
+  --color-noncompliant-border: #F8D0CD;
+  --color-review: #A8620A;
+  --color-review-bg: #FEF7EC;
+  --color-review-border: #F9E2BE;
+  --color-bug: #475569;
+  --color-bug-bg: #F1F5F9;
+  --color-bug-border: #CBD5E1;
+  --font-sans: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-neutral-dark);
+  background-color: var(--color-neutral-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tabular numerals for all numbers and telemetry */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fluent scrollbar style */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Focus visibility for accessibility */
+*:focus-visible {
+  outline: 2px solid #2F6FA3;
+  outline-offset: 2px;
+}

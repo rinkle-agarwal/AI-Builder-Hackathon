@@ -1,0 +1,146 @@
+{
+  "run_id": "RUN-1013-144801",
+  "timestamp": "2026-10-13T14:48:25.761619",
+  "base_url": "http://localhost:3000/freshcart.html",
+  "findings_count": 8,
+  "screenshots": [
+    "/runs/RUN-1013-144801/001_01_listing_home.png",
+    "/runs/RUN-1013-144801/002_02_urgency_timer.png",
+    "/runs/RUN-1013-144801/003_02_scarcity_atta.png",
+    "/runs/RUN-1013-144801/004_03_added_atta.png",
+    "/runs/RUN-1013-144801/005_02_scarcity_dal.png",
+    "/runs/RUN-1013-144801/006_03_added_dal.png",
+    "/runs/RUN-1013-144801/007_02_scarcity_butter.png",
+    "/runs/RUN-1013-144801/008_03_added_butter.png",
+    "/runs/RUN-1013-144801/009_04_cart_summary.png",
+    "/runs/RUN-1013-144801/010_05_upsell_confirm_shaming.png",
+    "/runs/RUN-1013-144801/011_06_payment_gateway.png",
+    "/runs/RUN-1013-144801/012_07_basket_sneaking_donation.png",
+    "/runs/RUN-1013-144801/013_08_order_placed.png",
+    "/runs/RUN-1013-144801/014_09_account_overview.png",
+    "/runs/RUN-1013-144801/015_10_cancel_step1_benefits.png",
+    "/runs/RUN-1013-144801/016_11_cancel_step2_survey.png",
+    "/runs/RUN-1013-144801/017_12_cancel_step3_discount_offer.png",
+    "/runs/RUN-1013-144801/018_13_cancel_step4_type_cancel.png",
+    "/runs/RUN-1013-144801/019_14_cancellation_confirmed.png"
+  ],
+  "findings": [
+    {
+      "pattern": "false_urgency_timer",
+      "item_id": "atta",
+      "step": "product_listing",
+      "description": "Artificial countdown timer banner (09:59) reset across customer journey sessions",
+      "evidence": {
+        "timer_value": "09:59"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144801/002_02_urgency_timer.png"
+      ],
+      "detected_at": "2026-10-13T14:48:04.533899"
+    },
+    {
+      "pattern": "false_urgency_scarcity",
+      "item_id": "atta",
+      "step": "product_listing",
+      "description": "Artificial scarcity claim 'Only 2 left!' displayed on atta",
+      "evidence": {
+        "sku": "atta",
+        "label": "Only 2 left!"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144801/003_02_scarcity_atta.png"
+      ],
+      "detected_at": "2026-10-13T14:48:04.883732"
+    },
+    {
+      "pattern": "false_urgency_scarcity",
+      "item_id": "dal",
+      "step": "product_listing",
+      "description": "Artificial scarcity claim 'Only 2 left!' displayed on dal",
+      "evidence": {
+        "sku": "dal",
+        "label": "Only 2 left!"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144801/005_02_scarcity_dal.png"
+      ],
+      "detected_at": "2026-10-13T14:48:06.517045"
+    },
+    {
+      "pattern": "false_urgency_scarcity",
+      "item_id": "butter",
+      "step": "product_listing",
+      "description": "Artificial scarcity claim 'Only 2 left!' displayed on butter",
+      "evidence": {
+        "sku": "butter",
+        "label": "Only 2 left!"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144801/007_02_scarcity_butter.png"
+      ],
+      "detected_at": "2026-10-13T14:48:08.133694"
+    },
+    {
+      "pattern": "drip_pricing",
+      "item_id": "atta",
+      "step": "cart_review",
+      "description": "Delivery charge omitted from cart subtotal; only disclosed downstream at payment",
+      "evidence": {
+        "cart_displayed_total": 499.0,
+        "omitted_charges": [
+          "delivery_fee"
+        ]
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144801/009_04_cart_summary.png"
+      ],
+      "detected_at": "2026-10-13T14:48:10.943906"
+    },
+    {
+      "pattern": "confirm_shaming",
+      "item_id": "checkout",
+      "step": "upsell_modal",
+      "description": "Decline action utilizes manipulative guilt copy: \"No thanks, I like paying extra\"",
+      "evidence": {
+        "decline_button_text": "No thanks, I like paying extra"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144801/010_05_upsell_confirm_shaming.png"
+      ],
+      "detected_at": "2026-10-13T14:48:12.477467"
+    },
+    {
+      "pattern": "basket_sneaking",
+      "item_id": "checkout",
+      "step": "payment_checkout",
+      "description": "Charity donation fee pre-checked without affirmative consumer opt-in",
+      "evidence": {
+        "sneaked_amount": 10,
+        "label": "Donate ₹10 to FreshCart Foundation",
+        "pre_selected": true
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144801/012_07_basket_sneaking_donation.png"
+      ],
+      "detected_at": "2026-10-13T14:48:14.072518"
+    },
+    {
+      "pattern": "subscription_trap",
+      "item_id": "membership",
+      "step": "account_cancellation",
+      "description": "Asymmetric cancellation architecture: 1-click enroll vs 4 friction screens with mandatory all-caps typing",
+      "evidence": {
+        "friction_steps": 4,
+        "mandatory_survey": true,
+        "type_confirmation_required": "CANCEL"
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144801/015_10_cancel_step1_benefits.png",
+        "/runs/RUN-1013-144801/016_11_cancel_step2_survey.png",
+        "/runs/RUN-1013-144801/017_12_cancel_step3_discount_offer.png",
+        "/runs/RUN-1013-144801/018_13_cancel_step4_type_cancel.png"
+      ],
+      "detected_at": "2026-10-13T14:48:24.095395"
+    }
+  ]
+}

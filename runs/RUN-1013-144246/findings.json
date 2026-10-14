@@ -1,0 +1,29 @@
+{
+  "run_id": "RUN-1013-144246",
+  "timestamp": "2026-10-13T14:42:59.643112",
+  "base_url": "http://localhost:3000/freshcart.html",
+  "findings_count": 1,
+  "screenshots": [
+    "/runs/RUN-1013-144246/001_01_listing_home.png",
+    "/runs/RUN-1013-144246/002_04_cart_summary.png",
+    "/runs/RUN-1013-144246/003_06_payment_gateway.png"
+  ],
+  "findings": [
+    {
+      "pattern": "drip_pricing",
+      "item_id": "cart",
+      "step": "cart_review",
+      "description": "Delivery charge omitted from cart subtotal; only disclosed downstream at payment",
+      "evidence": {
+        "cart_displayed_total": 0,
+        "omitted_charges": [
+          "delivery_fee"
+        ]
+      },
+      "screenshots": [
+        "/runs/RUN-1013-144246/002_04_cart_summary.png"
+      ],
+      "detected_at": "2026-10-13T14:42:59.589712"
+    }
+  ]
+}
