@@ -768,7 +768,7 @@ Certified by TrustLens AI Multi-Agent Compliance Pipeline`;
                 </div>
 
                 <a
-                  href={`http://localhost:8000/mongo-viewer?run_id=${runId || ''}`}
+                  href={`/mongo-viewer?run_id=${runId || ''}`}
                   target="_blank"
                   rel="noreferrer"
                   className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 flex items-center gap-1 transition-colors"
@@ -1240,7 +1240,7 @@ Certified by TrustLens AI Multi-Agent Compliance Pipeline`;
                   {/* Export Action Buttons */}
                   <div className="flex sm:flex-col gap-2 shrink-0">
                     <a
-                      href={`http://localhost:8000/api/run/${displayAudit.run_id || 'RUN-012'}/report.pdf`}
+                      href={`/api/run/${displayAudit.run_id || 'RUN-012'}/report.pdf`}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
@@ -1356,7 +1356,7 @@ Certified by TrustLens AI Multi-Agent Compliance Pipeline`;
                   </div>
 
                   <a
-                    href={`http://localhost:8000/mongo-viewer?run_id=${displayAudit.run_id || ''}`}
+                    href={`/mongo-viewer?run_id=${displayAudit.run_id || ''}`}
                     target="_blank"
                     rel="noreferrer"
                     className="text-xs font-semibold text-[#2F6FA3] hover:text-[#102A56] flex items-center gap-1 hover:underline"

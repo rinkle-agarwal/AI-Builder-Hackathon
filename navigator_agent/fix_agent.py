@@ -203,6 +203,38 @@ class FixSuggestionAgent:
                 pass
         return log_entry
 
+    def _call_gemini_vertex_fix(self, prompt: str) -> Optional[Dict[str, Any]]:
+        """Invokes Vertex AI / Gemini 2.5 Flash to synthesize high-converting ethical business alternatives."""
+        if not self.gemini_key:
+            return None
+        project_id = os.getenv("GCP_PROJECT_ID", "project-70e159c8-db48-48d9-812")
+        headers = {
+            "Content-Type": "application/json",
+            "x-goog-user-project": project_id
+        }
+        payload = {
+            "contents": [{
+                "parts": [{
+                    "text": (
+                        "You are a growth UX and behavioral design expert. Provide high-impact, ethical, "
+                        "conversion-boosting alternatives to dark patterns in valid JSON only.\n\n" + prompt
+                    )
+                }]
+            }],
+            "generationConfig": {"response_mime_type": "application/json"}
+        }
+        for model in ["gemini-2.5-flash", "gemini-flash-latest"]:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_key}"
+            try:
+                print(f"  [Vertex AI] Routing ethical fix synthesis to GCP Project: {project_id} (Model: {model})", flush=True)
+                resp = requests.post(url, json=payload, headers=headers, timeout=8)
+                if resp.status_code == 200:
+                    text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+                    return json.loads(text)
+            except Exception:
+                continue
+        return None
+
     def _call_groq_fix_enhancer(self, prompt: str) -> Optional[Dict[str, Any]]:
         """Invokes Groq LLM to refine actionable business alternative copy."""
         if not self.groq_key:
@@ -339,7 +371,7 @@ class FixSuggestionAgent:
                 f"Enhance the UX copy and projected impact in JSON format with fields:\n"
                 f"ux_copy (1 compelling sentence), projected_impact (metric projection)."
             )
-            llm_res = self._call_groq_fix_enhancer(prompt)
+            llm_res = self._call_gemini_vertex_fix(prompt) or self._call_groq_fix_enhancer(prompt)
 
             if llm_res and "ux_copy" in llm_res:
                 ux_copy = llm_res.get("ux_copy", spec["business_alternative"]["ux_copy"])

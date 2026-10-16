@@ -1,0 +1,47 @@
+steps:
+  # 1. Build Docker image using Cloud Build
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/trustlens-ai:$BUILD_ID'
+      - '-t'
+      - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/trustlens-ai:latest'
+      - '.'
+
+  # 2. Push Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/trustlens-ai'
+
+  # 3. Deploy to Cloud Run Services
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'trustlens-ai'
+      - '--image=$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/trustlens-ai:latest'
+      - '--region=$_REGION'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--execution-environment=gen2'
+      - '--cpu=2'
+      - '--memory=4Gi'
+      - '--timeout=3600'
+      - '--service-account=$_SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com'
+      - '--set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCS_BUCKET_NAME=$_BUCKET_NAME,HEADLESS=true'
+
+substitutions:
+  _REGION: 'us-central1'
+  _REPO_NAME: 'trustlens-repo'
+  _SERVICE_ACCOUNT: 'trustlens-agent-sa'
+  _BUCKET_NAME: 'trustlens-evidence'
+
+images:
+  - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/trustlens-ai:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

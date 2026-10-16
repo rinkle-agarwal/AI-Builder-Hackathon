@@ -49,7 +49,7 @@ export const AuditReportModal: React.FC<AuditReportModalProps> = ({
     setDownloadingPdf(true);
     setDownloadError(null);
     try {
-      const response = await fetch(`http://localhost:8000/api/run/${runId}/report.pdf`);
+      const response = await fetch(`/api/run/${runId}/report.pdf`);
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -273,7 +273,7 @@ export const AuditReportModal: React.FC<AuditReportModalProps> = ({
 
             {/* Open in New Window */}
             <a
-              href={`http://localhost:8000/api/run/${runId}/report.html`}
+              href={`/api/run/${runId}/report.html`}
               target="_blank"
               rel="noreferrer"
               className="p-1.5 rounded-lg text-[#A5C4DC] hover:text-white hover:bg-white/10 transition-colors"

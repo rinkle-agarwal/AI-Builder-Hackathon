@@ -1,0 +1,166 @@
+{
+  "run_id": "RUN-1015-112311",
+  "findings_count": 5,
+  "findings": [
+    {
+      "pattern": "drip_pricing",
+      "item_id": "atta",
+      "step": "cart",
+      "description": "Hidden packaging & handling fee (+₹30) injected in cart across items without upfront storefront disclosure",
+      "evidence": {
+        "items_subtotal": 756,
+        "hidden_fee": 30,
+        "cart_total": 786,
+        "target_item": "atta"
+      },
+      "screenshots": [
+        "/runs/RUN-1015-112311/01_dp1_drip_pricing_before.png",
+        "/runs/RUN-1015-112311/02_dp1_drip_pricing_after.png"
+      ],
+      "pattern_name": "Drip Pricing",
+      "before_screenshot": "/runs/RUN-1015-112311/01_dp1_drip_pricing_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/02_dp1_drip_pricing_after.png"
+    },
+    {
+      "pattern": "false_urgency_timer",
+      "item_id": "atta",
+      "step": "home_catalogue",
+      "description": "Manipulative countdown timer resets upon reload (09:48 -> 09:45 -> 10:00) & artificial low-stock claim 'Only 3 left!' on Atta (warehouse inventory: 178 units)",
+      "evidence": {
+        "timer_at_start": "09:48",
+        "timer_after_tick": "09:45",
+        "timer_after_reload": "10:00",
+        "scarcity_claim": "Only 3 left!",
+        "sku": "atta",
+        "erp_warehouse_units": 178,
+        "is_scarcity_false": true
+      },
+      "screenshots": [
+        "/runs/RUN-1015-112311/03_dp2_false_urgency_before.png",
+        "/runs/RUN-1015-112311/04_dp2_false_urgency_after.png"
+      ],
+      "pattern_name": "False Urgency",
+      "before_screenshot": "/runs/RUN-1015-112311/03_dp2_false_urgency_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/04_dp2_false_urgency_after.png"
+    },
+    {
+      "pattern": "confirm_shaming",
+      "item_id": "checkout",
+      "step": "checkout",
+      "description": "Manipulative guilt copy on upsell decline button: \"No thanks, I like paying extra\"",
+      "evidence": {
+        "decline_button_text": "No thanks, I like paying extra"
+      },
+      "screenshots": [
+        "/runs/RUN-1015-112311/05_confirmshaming_before.png",
+        "/runs/RUN-1015-112311/06_confirmshaming_after.png"
+      ],
+      "pattern_name": "Confirmshaming",
+      "before_screenshot": "/runs/RUN-1015-112311/05_confirmshaming_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/06_confirmshaming_after.png"
+    },
+    {
+      "pattern": "basket_sneaking",
+      "item_id": "checkout",
+      "step": "payment",
+      "description": "Unsolicited add-on automatically pre-selected by default: Donate ₹10 to FreshCart Foundation",
+      "evidence": {
+        "sneaked_item": "Donate ₹10 to FreshCart Foundation",
+        "price": 10,
+        "pre_selected": true
+      },
+      "screenshots": [
+        "/runs/RUN-1015-112311/07_basket_sneaking_before.png",
+        "/runs/RUN-1015-112311/08_basket_sneaking_after.png"
+      ],
+      "pattern_name": "Basket Sneaking",
+      "before_screenshot": "/runs/RUN-1015-112311/07_basket_sneaking_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/08_basket_sneaking_after.png"
+    },
+    {
+      "pattern": "subscription_trap",
+      "item_id": "membership",
+      "step": "account_cancellation",
+      "description": "Asymmetric cancellation architecture: 1-click enroll vs 4-screen retention labyrinth requiring typing 'CANCEL'",
+      "evidence": {
+        "friction_screens": 4,
+        "typing_barrier": "CANCEL",
+        "enroll_clicks": 1,
+        "cancel_clicks": 5
+      },
+      "screenshots": [
+        "/runs/RUN-1015-112311/09_subscription_trap_before.png",
+        "/runs/RUN-1015-112311/10_subscription_trap_after.png"
+      ],
+      "pattern_name": "Subscription Trap",
+      "before_screenshot": "/runs/RUN-1015-112311/09_subscription_trap_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/10_subscription_trap_after.png"
+    }
+  ],
+  "dark_pattern_pairs": [
+    {
+      "pattern": "Drip Pricing",
+      "pattern_id": "drip_pricing",
+      "before_screenshot": "/runs/RUN-1015-112311/01_dp1_drip_pricing_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/02_dp1_drip_pricing_after.png",
+      "description": "Hidden packaging & handling fee (+₹30) injected in cart across items without upfront storefront disclosure",
+      "evidence": {
+        "items_subtotal": 756,
+        "hidden_fee": 30,
+        "cart_total": 786,
+        "target_item": "atta"
+      }
+    },
+    {
+      "pattern": "False Urgency",
+      "pattern_id": "false_urgency_timer",
+      "before_screenshot": "/runs/RUN-1015-112311/03_dp2_false_urgency_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/04_dp2_false_urgency_after.png",
+      "description": "Manipulative countdown timer resets upon reload (09:48 -> 09:45 -> 10:00) & artificial low-stock claim 'Only 3 left!' on Atta (warehouse inventory: 178 units)",
+      "evidence": {
+        "timer_at_start": "09:48",
+        "timer_after_tick": "09:45",
+        "timer_after_reload": "10:00",
+        "scarcity_claim": "Only 3 left!",
+        "sku": "atta",
+        "erp_warehouse_units": 178,
+        "is_scarcity_false": true
+      }
+    },
+    {
+      "pattern": "Confirmshaming",
+      "pattern_id": "confirm_shaming",
+      "before_screenshot": "/runs/RUN-1015-112311/05_confirmshaming_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/06_confirmshaming_after.png",
+      "description": "Manipulative guilt copy on upsell decline button: \"No thanks, I like paying extra\"",
+      "evidence": {
+        "decline_button_text": "No thanks, I like paying extra"
+      }
+    },
+    {
+      "pattern": "Basket Sneaking",
+      "pattern_id": "basket_sneaking",
+      "before_screenshot": "/runs/RUN-1015-112311/07_basket_sneaking_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/08_basket_sneaking_after.png",
+      "description": "Unsolicited add-on automatically pre-selected by default: Donate ₹10 to FreshCart Foundation",
+      "evidence": {
+        "sneaked_item": "Donate ₹10 to FreshCart Foundation",
+        "price": 10,
+        "pre_selected": true
+      }
+    },
+    {
+      "pattern": "Subscription Trap",
+      "pattern_id": "subscription_trap",
+      "before_screenshot": "/runs/RUN-1015-112311/09_subscription_trap_before.png",
+      "after_screenshot": "/runs/RUN-1015-112311/10_subscription_trap_after.png",
+      "description": "Asymmetric cancellation architecture: 1-click enroll vs 4-screen retention labyrinth requiring typing 'CANCEL'",
+      "evidence": {
+        "friction_screens": 4,
+        "typing_barrier": "CANCEL",
+        "enroll_clicks": 1,
+        "cancel_clicks": 5
+      }
+    }
+  ]
+}

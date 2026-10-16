@@ -47,7 +47,7 @@ export const HeaderStrip: React.FC<HeaderStripProps> = ({
     if (onOpenReportModal) {
       onOpenReportModal();
     } else {
-      window.open(`http://localhost:8000/api/run/${currentRun?.id || 'RUN-012'}/report.html`, '_blank');
+      window.open(`/api/run/${currentRun?.id || 'RUN-012'}/report.html`, '_blank');
     }
   };
 
@@ -106,7 +106,7 @@ export const HeaderStrip: React.FC<HeaderStripProps> = ({
 
           {/* MongoDB Explorer Link */}
           <a
-            href="http://localhost:8000/mongo-viewer"
+            href="/mongo-viewer"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-colors"

@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  History, 
-  FileDown, 
-  Calendar, 
-  TrendingUp, 
-  ChevronRight, 
-  CheckCircle2, 
-  AlertCircle, 
-  Clock, 
+import {
+  History,
+  FileDown,
+  Calendar,
+  TrendingUp,
+  ChevronRight,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
   ExternalLink,
   ArrowUpRight,
   ArrowDownRight,
   FileText
 } from 'lucide-react';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  CartesianGrid, 
-  ReferenceDot 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  ReferenceDot
 } from 'recharts';
 import { TestRun } from '../types';
 import { RELEASE_MARKERS, MOCK_HISTORICAL_RUNS_SUMMARY } from '../data/mock';
@@ -130,7 +130,7 @@ export const ComplianceTrail: React.FC<ComplianceTrailProps> = ({
 
         <div className="flex items-center gap-2.5 flex-wrap">
           <a
-            href="http://localhost:8000/api/run/RUN-012/report.pdf"
+            href="/api/run/RUN-012/report.pdf"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-colors"
@@ -200,10 +200,10 @@ export const ComplianceTrail: React.FC<ComplianceTrailProps> = ({
                   return null;
                 }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="score" 
-                stroke="#2F6FA3" 
+              <Line
+                type="monotone"
+                dataKey="score"
+                stroke="#2F6FA3"
                 strokeWidth={2.5}
                 dot={{ r: 4, fill: '#102A56', stroke: '#FFFFFF', strokeWidth: 2 }}
                 activeDot={{ r: 6, fill: '#2F6FA3' }}
@@ -287,10 +287,9 @@ export const ComplianceTrail: React.FC<ComplianceTrailProps> = ({
                     {run.variant}
                   </td>
                   <td className="py-3 px-3 font-mono font-bold tabular-nums text-[#102A56]">
-                    <span className={`px-2 py-0.5 rounded-full text-xs ${
-                      run.score >= 80 ? 'bg-[#E8F5EE] text-[#1E7B53]' :
-                      run.score >= 50 ? 'bg-[#EAF4F8] text-[#2F6FA3]' : 'bg-[#FDF2F2] text-[#B3261E]'
-                    }`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs ${run.score >= 80 ? 'bg-[#E8F5EE] text-[#1E7B53]' :
+                        run.score >= 50 ? 'bg-[#EAF4F8] text-[#2F6FA3]' : 'bg-[#FDF2F2] text-[#B3261E]'
+                      }`}>
                       {run.score}/100
                     </span>
                   </td>

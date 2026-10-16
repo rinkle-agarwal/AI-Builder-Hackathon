@@ -41,6 +41,10 @@ os.makedirs("runs", exist_ok=True)
 os.makedirs("public/runs", exist_ok=True)
 app.mount("/runs", StaticFiles(directory="public/runs"), name="runs")
 
+if os.path.exists("dist/assets"):
+    app.mount("/assets", StaticFiles(directory="dist/assets"), name="assets")
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -89,6 +93,13 @@ def _run_multi_agent_pipeline(run_id: str, req: StartRunRequest):
     target_url = req.targetUrl or "http://localhost:3000/freshcart_fixed.html"
     if "freshcart-demo.store" in target_url:
         target_url = "http://localhost:3000/freshcart_fixed.html"
+
+    # In Cloud Run container, route localhost:3000 to internal container server
+    port = os.getenv("PORT", "8000")
+    if os.getenv("K_SERVICE") or sys.platform != "win32":
+        if "localhost:3000" in target_url:
+            target_url = target_url.replace("localhost:3000", f"127.0.0.1:{port}")
+
     req.targetUrl = target_url
     run_state["targetUrl"] = target_url
 
@@ -147,10 +158,11 @@ def _run_multi_agent_pipeline(run_id: str, req: StartRunRequest):
                 "log": step_log
             })
 
-        # Launch Navigator Agent (Playwright in visible mode by default!)
+        # Launch Navigator Agent (Headless on Cloud Run container, GUI on local desktop)
+        is_cloud = bool(os.getenv("K_SERVICE") or sys.platform != "win32" or os.getenv("HEADLESS", "false").lower() == "true")
         nav_agent = NavigatorAgent(
             base_url=req.targetUrl,
-            headless=req.headless,
+            headless=True if is_cloud else req.headless,
             run_id=run_id,
             progress_callback=on_step_progress
         )
@@ -570,6 +582,8 @@ async def stream_run(run_id: str):
         raise HTTPException(status_code=404, detail="Run not found")
 
     async def event_generator():
+        # Immediate ping event so GFE and browser establish live stream without delay
+        yield f"data: {json.dumps({'event': 'stream_connected', 'run_id': run_id})}\n\n"
         last_index = 0
         while True:
             events = EVENT_QUEUES.get(run_id, [])
@@ -585,7 +599,15 @@ async def stream_run(run_id: str):
 
             await asyncio.sleep(0.3)
 
-    return StreamingResponse(event_generator(), media_type="text/event-stream")
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
 
 
 @app.get("/api/db/status")
@@ -1012,6 +1034,15 @@ async def get_run_report_pdf(run_id: str):
     
     try:
         pdf_bytes = await generate_report_pdf(run_data)
+        
+        # Upload report to Google Cloud Storage if configured
+        try:
+            from db import gcs_storage
+            if gcs_storage and gcs_storage.is_connected:
+                gcs_storage.upload_report_pdf(run_id, pdf_bytes)
+        except Exception:
+            pass
+
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
@@ -1023,6 +1054,26 @@ async def get_run_report_pdf(run_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {str(e)}")
 
+
+# ─────────────────────────────────────────────────────────────
+# SPA & STATIC FALLBACK ROUTER (FOR CLOUD RUN PRODUCTION)
+# ─────────────────────────────────────────────────────────────
+@app.get("/{full_path:path}")
+async def serve_spa_or_static(full_path: str):
+    """Serves compiled React SPA assets and static files from dist/."""
+    # 1. Direct dist file check (e.g. freshcart.html, freshcart_fixed.html)
+    dist_file = Path("dist") / full_path
+    if full_path and dist_file.is_file():
+        return FileResponse(dist_file)
+    # 2. Public file check
+    pub_file = Path("public") / full_path
+    if full_path and pub_file.is_file():
+        return FileResponse(pub_file)
+    # 3. SPA index.html fallback for client-side React routes
+    index_file = Path("dist/index.html")
+    if index_file.is_file():
+        return FileResponse(index_file)
+    raise HTTPException(status_code=404, detail="File not found")
 
 
 def release_port(port: int = 8000):
@@ -1051,11 +1102,25 @@ def release_port(port: int = 8000):
 
 if __name__ == "__main__":
     import uvicorn
-    release_port(8000)
+    port = int(os.getenv("PORT", 8000))
+    host = "0.0.0.0" if (os.getenv("K_SERVICE") or sys.platform != "win32") else "127.0.0.1"
+    release_port(port)
     if sys.platform == "win32":
         try:
             asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
         except Exception:
             pass
-    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=False)
+    gcp_proj = os.getenv("GCP_PROJECT_ID", "project-70e159c8-db48-48d9-812")
+    gcs_bucket = os.getenv("GCS_BUCKET_NAME", "trustlens-evidence")
+    gcp_reg = os.getenv("GCP_REGION", "us-central1")
+    print("=" * 65)
+    print("🛡️  TRUSTLENS AI - MULTI-AGENT PLATFORM STARTED")
+    print(f"📌 Google Cloud Project ID: {gcp_proj}")
+    print(f"📍 Google Cloud Region:     {gcp_reg}")
+    print(f"🪣 Cloud Storage Bucket:    gs://{gcs_bucket}")
+    print(f"🧠 AI Engine:               Vertex AI Gemini 2.5 Flash")
+    print(f"🚀 Dashboard & API Host:    http://{host}:{port}")
+    print("=" * 65)
+    uvicorn.run("server:app", host=host, port=port, reload=False)
+
 

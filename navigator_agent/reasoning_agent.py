@@ -204,6 +204,39 @@ class ReasoningAgent:
                 pass
         return log_entry
 
+    def _call_gemini_vertex_reasoning(self, prompt: str) -> Optional[Dict[str, Any]]:
+        """Invokes Vertex AI / Gemini 2.5 Flash for statutory legal reasoning synthesis."""
+        if not self.gemini_key:
+            return None
+        project_id = os.getenv("GCP_PROJECT_ID", "project-70e159c8-db48-48d9-812")
+        headers = {
+            "Content-Type": "application/json",
+            "x-goog-user-project": project_id
+        }
+        payload = {
+            "contents": [{
+                "parts": [{
+                    "text": (
+                        "You are a regulatory compliance legal officer specializing in Indian Consumer Protection Law "
+                        "(CCPA 2023 Dark Pattern Guidelines) and FTC regulations. Provide objective, statutory-grounded "
+                        "legal reasoning in valid JSON format only.\n\n" + prompt
+                    )
+                }]
+            }],
+            "generationConfig": {"response_mime_type": "application/json"}
+        }
+        for model in ["gemini-2.5-flash", "gemini-flash-latest"]:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_key}"
+            try:
+                print(f"  [Vertex AI] Routing legal reasoning to GCP Project: {project_id} (Model: {model})", flush=True)
+                resp = requests.post(url, json=payload, headers=headers, timeout=8)
+                if resp.status_code == 200:
+                    text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+                    return json.loads(text)
+            except Exception:
+                continue
+        return None
+
     def _call_groq_reasoning(self, prompt: str) -> Optional[Dict[str, Any]]:
         """Invokes Groq LLM for snappy legal reasoning synthesis."""
         if not self.groq_key:
@@ -307,7 +340,7 @@ class ReasoningAgent:
                 f"verdict ('PROBABLE VIOLATION'), confidence (float between 0.94 and 0.99), legal_reasoning (2-3 sentences), remediation_summary (1 sentence)."
             )
 
-            llm_result = self._call_groq_reasoning(prompt)
+            llm_result = self._call_gemini_vertex_reasoning(prompt) or self._call_groq_reasoning(prompt)
 
             if llm_result and "legal_reasoning" in llm_result:
                 reasoning = llm_result.get("legal_reasoning", rule_corpus["default_legal_reasoning"])

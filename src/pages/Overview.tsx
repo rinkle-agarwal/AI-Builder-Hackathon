@@ -631,7 +631,7 @@ export const Overview: React.FC<OverviewProps> = ({
                 {/* Stage 5 Quick PDF Download Link */}
                 {stage.number === 5 && stage.status !== 'Locked' && (
                   <a
-                    href={`http://localhost:8000/api/run/${currentRun.id || 'RUN-012'}/report.pdf`}
+                    href={`/api/run/${currentRun.id || 'RUN-012'}/report.pdf`}
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => e.stopPropagation()}

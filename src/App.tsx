@@ -65,8 +65,8 @@ export default function App() {
           <HeaderStrip
             currentRun={currentRun}
             onOpenRunModal={() => setRunModalOpen(true)}
-            onStartAnalysis={() => setRunModalOpen(true)}
-            onRetest={() => setRunModalOpen(true)}
+            onStartAnalysis={handleStartAnalysis}
+            onRetest={handleStartAnalysis}
             onResetPipeline={resetPipeline}
             isAuditorView={isAuditorView}
             onToggleAuditorView={() => setIsAuditorView(!isAuditorView)}

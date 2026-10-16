@@ -106,17 +106,24 @@ class PatternDetectorAgent:
             "generationConfig": {"response_mime_type": "application/json"}
         }
 
-        # Try primary Gemini 3.5 Flash with snappy timeout
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={self.gemini_key}"
-        try:
-            resp = requests.post(url, json=payload, timeout=6)
-            if resp.status_code == 200:
-                data = resp.json()
-                text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
-                parsed = json.loads(text)
-                return {"data": parsed, "model": "Gemini Vision (gemini-3.5-flash)"}
-        except Exception:
-            pass
+        # Try primary Gemini on Vertex AI / Gemini API
+        project_id = os.getenv("GCP_PROJECT_ID", "project-70e159c8-db48-48d9-812")
+        headers = {
+            "Content-Type": "application/json",
+            "x-goog-user-project": project_id
+        }
+        for model in ["gemini-2.5-flash", "gemini-flash-latest"]:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_key}"
+            try:
+                print(f"  [Vertex AI] Routing visual detection to GCP Project: {project_id} (Model: {model})", flush=True)
+                resp = requests.post(url, json=payload, headers=headers, timeout=8)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                    parsed = json.loads(text)
+                    return {"data": parsed, "model": f"Vertex AI Gemini Vision ({model})"}
+            except Exception:
+                continue
         return None
 
     def _call_groq_failover(self, prompt: str, context_details: str) -> Optional[Dict[str, Any]]:

@@ -1,0 +1,37 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "trustlens-ai",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/mongo-viewer",
+        "run": {
+          "serviceId": "trustlens-ai",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/runs/**",
+        "run": {
+          "serviceId": "trustlens-ai",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

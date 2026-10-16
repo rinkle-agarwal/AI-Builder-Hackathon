@@ -9,11 +9,20 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@': path.resolve(import.meta.dirname, '.'),
+        '@reduxjs/toolkit': path.resolve(import.meta.dirname, 'node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js'),
       },
     },
     server: {
       proxy: {
         '/api': {
+          target: 'http://127.0.0.1:8000',
+          changeOrigin: true,
+        },
+        '/mongo-viewer': {
+          target: 'http://127.0.0.1:8000',
+          changeOrigin: true,
+        },
+        '/runs': {
           target: 'http://127.0.0.1:8000',
           changeOrigin: true,
         },

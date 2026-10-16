@@ -233,6 +233,16 @@ class NavigatorAgent:
         except Exception as e:
             print(f"MongoDB screenshot save warning: {e}")
 
+        # Upload to Google Cloud Storage (GCS) if configured
+        try:
+            from db import gcs_storage
+            if gcs_storage and gcs_storage.is_connected:
+                gcs_url = gcs_storage.upload_screenshot(self.run_id, filename, str(path))
+                if gcs_url.startswith("http"):
+                    web_url = gcs_url
+        except Exception as e:
+            print(f"GCS upload warning: {e}")
+
         return web_url
 
     def _price(self, text: Optional[str]) -> Optional[float]:
@@ -341,9 +351,17 @@ class NavigatorAgent:
                 pass
 
         with sync_playwright() as pw:
+            launch_args = [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--single-process" if os.getenv("K_SERVICE") else "--no-sandbox"
+            ]
             browser = pw.chromium.launch(
                 headless=self.headless,
                 slow_mo=self.slow_mo,
+                args=launch_args,
             )
             ctx: BrowserContext = browser.new_context(
                 viewport={"width": 1280, "height": 840}
