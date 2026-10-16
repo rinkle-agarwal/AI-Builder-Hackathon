@@ -35,8 +35,10 @@ export default function App() {
   } = useRunSimulation('RUN-001');
 
   const handleStartAnalysis = () => {
-    const targetUrl = (!currentRun?.targetUrl || currentRun.targetUrl.includes('freshcart-demo.store'))
-      ? 'http://localhost:3000/freshcart.html'
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
+    const fallbackTarget = origin ? `${origin}/freshcart.html` : '/freshcart.html';
+    const targetUrl = (!currentRun?.targetUrl || currentRun.targetUrl.includes('freshcart-demo.store') || currentRun.targetUrl.includes('localhost'))
+      ? fallbackTarget
       : currentRun.targetUrl;
     startNewRun({
       siteName: currentRun?.siteName ? currentRun.siteName.replace(/\s*\(Indiranagar Store\)/i, '') : 'FreshCart',
@@ -65,8 +67,8 @@ export default function App() {
           <HeaderStrip
             currentRun={currentRun}
             onOpenRunModal={() => setRunModalOpen(true)}
-            onStartAnalysis={handleStartAnalysis}
-            onRetest={handleStartAnalysis}
+            onStartAnalysis={() => setRunModalOpen(true)}
+            onRetest={() => setRunModalOpen(true)}
             onResetPipeline={resetPipeline}
             isAuditorView={isAuditorView}
             onToggleAuditorView={() => setIsAuditorView(!isAuditorView)}
@@ -96,7 +98,7 @@ export default function App() {
                   element={
                     <Overview
                       currentRun={currentRun}
-                      onOpenRunModal={handleStartAnalysis}
+                      onOpenRunModal={() => setRunModalOpen(true)}
                       onRetryStage={retryStage}
                       onResetPipeline={resetPipeline}
                       isAuditorView={isAuditorView}

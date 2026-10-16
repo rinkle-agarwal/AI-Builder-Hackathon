@@ -136,7 +136,10 @@ class NavigatorAgent:
         progress_callback: Optional[Callable[[JourneyStep], None]] = None
     ):
         if not base_url or "freshcart-demo.store" in base_url or not base_url.startswith("http"):
-            self.base_url = "http://localhost:3000/freshcart_fixed.html"
+            if base_url and base_url.startswith("/"):
+                self.base_url = f"http://127.0.0.1:8000{base_url}"
+            else:
+                self.base_url = "http://127.0.0.1:8000/freshcart_fixed.html"
         else:
             self.base_url = base_url.rstrip("/")
 

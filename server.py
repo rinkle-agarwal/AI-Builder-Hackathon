@@ -25,7 +25,7 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi import FastAPI, BackgroundTasks, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse, FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -90,15 +90,21 @@ def _run_multi_agent_pipeline(run_id: str, req: StartRunRequest):
     run_state = RUNS[run_id]
     start_time = time.time()
 
-    target_url = req.targetUrl or "http://localhost:3000/freshcart_fixed.html"
+    target_url = req.targetUrl or "/freshcart_fixed.html"
     if "freshcart-demo.store" in target_url:
-        target_url = "http://localhost:3000/freshcart_fixed.html"
+        target_url = "/freshcart_fixed.html"
 
-    # In Cloud Run container, route localhost:3000 to internal container server
-    port = os.getenv("PORT", "8000")
+    # In Cloud Run container, route local, relative, or cloud URLs to internal container server
+    port = os.getenv("PORT", "8080")
     if os.getenv("K_SERVICE") or sys.platform != "win32":
-        if "localhost:3000" in target_url:
-            target_url = target_url.replace("localhost:3000", f"127.0.0.1:{port}")
+        if "localhost:3000" in target_url or "localhost:8000" in target_url:
+            target_url = target_url.replace("localhost:3000", f"127.0.0.1:{port}").replace("localhost:8000", f"127.0.0.1:{port}")
+        elif "run.app" in target_url:
+            fname = target_url.split("/")[-1].split("?")[0]
+            if fname.endswith(".html"):
+                target_url = f"http://127.0.0.1:{port}/{fname}"
+        elif target_url.startswith("/"):
+            target_url = f"http://127.0.0.1:{port}{target_url}"
 
     req.targetUrl = target_url
     run_state["targetUrl"] = target_url
@@ -160,8 +166,14 @@ def _run_multi_agent_pipeline(run_id: str, req: StartRunRequest):
 
         # Launch Navigator Agent (Headless on Cloud Run container, GUI on local desktop)
         is_cloud = bool(os.getenv("K_SERVICE") or sys.platform != "win32" or os.getenv("HEADLESS", "false").lower() == "true")
+        target_endpoint = (req.targetUrl or "/freshcart_fixed.html").strip()
+        if not target_endpoint.startswith("http"):
+            if not target_endpoint.startswith("/"):
+                target_endpoint = f"/{target_endpoint}"
+            target_endpoint = f"http://127.0.0.1:8000{target_endpoint}"
+
         nav_agent = NavigatorAgent(
-            base_url=req.targetUrl,
+            base_url=target_endpoint,
             headless=True if is_cloud else req.headless,
             run_id=run_id,
             progress_callback=on_step_progress
@@ -940,10 +952,11 @@ document.addEventListener('keydown', e => {{ if(e.key === 'Escape') closeModal()
 
 
 @app.get("/api/fixtures")
-def list_available_fixtures():
+def list_available_fixtures(request: Request):
     """Scans public/ directory and dynamically returns all available test HTML stores."""
     public_dir = Path("public")
     fixtures = []
+
     if public_dir.exists():
         for f in sorted(public_dir.glob("*.html")):
             fname = f.name
@@ -966,7 +979,7 @@ def list_available_fixtures():
 
             fixtures.append({
                 "filename": fname,
-                "url": f"http://localhost:3000/{fname}",
+                "url": f"/{fname}",
                 "label": label,
                 "description": desc,
                 "tag": tag,

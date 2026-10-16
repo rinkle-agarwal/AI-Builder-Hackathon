@@ -21,7 +21,7 @@ interface FixtureItem {
 const DEFAULT_FIXTURES: FixtureItem[] = [
   {
     filename: 'freshcart.html',
-    url: 'http://localhost:3000/freshcart.html',
+    url: '/freshcart.html',
     label: 'FreshCart Storefront',
     description: 'Grocery catalogue, cart drawer, promotional flash banner, and checkout journey.',
     tag: '',
@@ -30,7 +30,7 @@ const DEFAULT_FIXTURES: FixtureItem[] = [
   },
   {
     filename: 'freshcart_fixed.html',
-    url: 'http://localhost:3000/freshcart_fixed.html',
+    url: '/freshcart_fixed.html',
     label: 'FreshCart Storefront (v2)',
     description: 'Grocery catalogue, cart drawer, upfront pricing disclosures, and checkout journey.',
     tag: '',
@@ -42,7 +42,7 @@ const DEFAULT_FIXTURES: FixtureItem[] = [
 export const RunModal: React.FC<RunModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [siteName, setSiteName] = useState('FreshCart Storefront (v2)');
   const [targetType, setTargetType] = useState<'URL' | 'HTML'>('URL');
-  const [targetUrl, setTargetUrl] = useState('http://localhost:3000/freshcart_fixed.html');
+  const [targetUrl, setTargetUrl] = useState('/freshcart_fixed.html');
   const [variant, setVariant] = useState<TestVariant>('Clean control');
   const [journeyTemplate, setJourneyTemplate] = useState('Search > cart > checkout > cancel');
   const [inventoryFileName, setInventoryFileName] = useState('');
@@ -61,7 +61,10 @@ export const RunModal: React.FC<RunModalProps> = ({ isOpen, onClose, onSubmit })
         .then((res) => res.json())
         .then((data) => {
           if (data && Array.isArray(data.fixtures) && data.fixtures.length > 0) {
-            setFixtures(data.fixtures);
+            setFixtures(data.fixtures.map((f: FixtureItem) => ({
+              ...f,
+              url: `/${f.filename}`
+            })));
           }
         })
         .catch(() => {
@@ -75,7 +78,7 @@ export const RunModal: React.FC<RunModalProps> = ({ isOpen, onClose, onSubmit })
   const handleSelectFixture = (f: FixtureItem) => {
     setSelectedFixture(f.filename);
     setIsCustomUrl(false);
-    setTargetUrl(f.url);
+    setTargetUrl(`/${f.filename}`);
     setSiteName(f.label);
     setVariant(f.variant);
     if (urlError) setUrlError(null);
@@ -84,15 +87,19 @@ export const RunModal: React.FC<RunModalProps> = ({ isOpen, onClose, onSubmit })
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    let effectiveUrl = targetUrl.trim();
     if (targetType === 'URL') {
+      if (effectiveUrl.startsWith('/')) {
+        effectiveUrl = typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}${effectiveUrl}` : effectiveUrl;
+      }
       try {
-        const parsed = new URL(targetUrl);
+        const parsed = new URL(effectiveUrl);
         if (!parsed.protocol.startsWith('http')) {
           setUrlError('Please enter a valid HTTP or HTTPS web address.');
           return;
         }
       } catch {
-        setUrlError('Please enter a valid format, e.g. http://localhost:3000/freshcart_fixed.html');
+        setUrlError('Please enter a valid URL format, e.g. /freshcart_fixed.html or https://your-store.com');
         return;
       }
     }
@@ -100,7 +107,7 @@ export const RunModal: React.FC<RunModalProps> = ({ isOpen, onClose, onSubmit })
     setUrlError(null);
     onSubmit({
       siteName,
-      targetUrl,
+      targetUrl: effectiveUrl,
       targetType,
       variant,
       journeyTemplate,
@@ -230,7 +237,7 @@ export const RunModal: React.FC<RunModalProps> = ({ isOpen, onClose, onSubmit })
               className={`w-full px-3 py-2 border rounded-lg text-sm bg-white font-mono text-xs focus:border-[#2F6FA3] ${
                 urlError ? 'border-red-500 bg-red-50/30' : 'border-[#D6E0EA]'
               }`}
-              placeholder="http://localhost:3000/freshcart_fixed.html"
+              placeholder="/freshcart_fixed.html"
             />
             {urlError && (
               <p className="text-xs text-red-600">{urlError}</p>

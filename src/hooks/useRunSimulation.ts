@@ -92,8 +92,10 @@ export function useRunSimulation(initialRunId: string = 'RUN-001') {
 
   const retryStage = useCallback((stageNumber: number) => {
     if (stageNumber === 1 && currentRun) {
-      const targetUrl = (!currentRun.targetUrl || currentRun.targetUrl.includes('freshcart-demo.store'))
-        ? 'http://localhost:3000/freshcart.html'
+      const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
+      const fallbackTarget = origin ? `${origin}/freshcart.html` : '/freshcart.html';
+      const targetUrl = (!currentRun.targetUrl || currentRun.targetUrl.includes('freshcart-demo.store') || currentRun.targetUrl.includes('localhost'))
+        ? fallbackTarget
         : currentRun.targetUrl;
       startNewRun({
         siteName: currentRun.siteName || 'FreshCart (demo store)',

@@ -25,7 +25,7 @@ export const AuditReportModal: React.FC<AuditReportModalProps> = ({
 
   const runId = run.id || 'RUN-012';
   const siteName = run.siteName || 'FreshCart (demo store)';
-  const targetUrl = run.targetUrl || 'http://localhost:3000/freshcart.html';
+  const targetUrl = run.targetUrl || (typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/freshcart.html` : '/freshcart.html');
   const score = run.complianceScore ?? 16;
   const auditRec = run.auditRecord || {};
   const isCompliant = run.nonCompliantCount !== undefined

@@ -151,13 +151,13 @@ export const HeaderStrip: React.FC<HeaderStripProps> = ({
             </button>
           )}
 
-          {/* Primary Action: Run analysis (directly launches pipeline) */}
+          {/* Primary Action: Run analysis (opens configuration modal) */}
           {!isAuditorView && (
             <button
-              onClick={onStartAnalysis || onOpenRunModal || onRetest}
+              onClick={onOpenRunModal || onStartAnalysis || onRetest}
               disabled={isRunning}
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#2F6FA3] hover:bg-[#265B86] text-white shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
-              title="Directly launch autonomous multi-agent compliance pipeline"
+              title="Launch autonomous multi-agent compliance pipeline"
             >
               {isRunning ? (
                 <>

@@ -652,10 +652,10 @@ export const Overview: React.FC<OverviewProps> = ({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        onRetryStage(1);
+                        onOpenRunModal();
                       }}
                       className="w-full flex items-center justify-center gap-1.5 py-1.5 px-2 bg-[#2F6FA3] hover:bg-[#265B86] text-white rounded-lg text-[11px] font-semibold transition-colors shadow-xs cursor-pointer"
-                      title="Run Playwright Navigator Agent (Opens browser)"
+                      title="Select store fixture and run Playwright analysis"
                     >
                       <Play className="w-3 h-3 fill-current" />
                       <span>Run analysis</span>

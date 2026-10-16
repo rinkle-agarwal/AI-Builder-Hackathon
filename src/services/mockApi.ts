@@ -247,7 +247,7 @@ class MockTrustLensApi implements TrustLensApiService {
       id: nextRunId,
       runNumber: nextRunNumber,
       siteName: input.siteName || 'FreshCart (demo store)',
-      targetUrl: input.targetUrl || 'http://localhost:3000/freshcart.html',
+      targetUrl: input.targetUrl || (typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/freshcart.html` : '/freshcart.html'),
       journeyTemplate: input.journeyTemplate,
       runDate: dateFormatted,
       formattedTime: timeFormatted,
@@ -285,7 +285,7 @@ class MockTrustLensApi implements TrustLensApiService {
     this.runs.unshift(newRun);
     this.notifySubscribers(newRun);
 
-    const effectiveTargetUrl = input.targetUrl || 'http://localhost:3000/freshcart.html';
+    const effectiveTargetUrl = input.targetUrl || (typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/freshcart.html` : '/freshcart.html');
 
     // Try connecting to Python FastAPI backend orchestrator (runs live Playwright)
     try {
@@ -863,7 +863,7 @@ class MockTrustLensApi implements TrustLensApiService {
         trailStage.logs.push(newLog);
         const auditRecord = {
           run_id: currentRun.id,
-          target_url: currentRun.targetUrl || 'http://localhost:3000/freshcart.html',
+          target_url: currentRun.targetUrl || (typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/freshcart.html` : '/freshcart.html'),
           timestamp_utc: new Date().toISOString(),
           compliance_score: finalScore,
           risk_standing: finalScore >= 80 ? 'Good Standing' : 'Severe Regulatory Risk',

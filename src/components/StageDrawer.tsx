@@ -477,7 +477,7 @@ export const StageDrawer: React.FC<StageDrawerProps> = ({
   // ── Stage 5: Compliance Trail & Regulatory Audit Ledger ──
   const defaultAuditRecord = {
     run_id: runId || 'RUN-1013-173611',
-    target_url: 'http://localhost:3000/freshcart.html',
+    target_url: typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/freshcart.html` : '/freshcart.html',
     timestamp_utc: '2026-10-13T17:36:11.892Z',
     compliance_score: 16,
     risk_standing: 'Severe Regulatory Risk',
