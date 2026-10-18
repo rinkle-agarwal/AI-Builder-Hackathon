@@ -13,8 +13,8 @@ TrustLens AI is a multi-agent system that tests a live storefront the way a cust
 | Item | Link |
 | --- | --- |
 | Cloud Run | https://trustlens-ai-222160488915.us-central1.run.app/ |
-| Video demonstration (3 to 4 min) | `<ADD VIDEO URL>` |
-| Pitch deck | `<ADD DECK LINK>` |
+| Video demonstration (3 to 4 min) | https://drive.google.com/file/d/1I8Gp-BKTOZwSVJREOPX0J63peJjQ8ac8/view?usp=drive_link |
+| Pitch deck | https://github.com/rinkle-agarwal/AI-Builder-Hackathon/tree/main/Hackathon%20Docs |
 | GitHub repository | https://github.com/rinkle-agarwal/AI-Builder-Hackathon |
 | Test data | https://trustlens-ai-222160488915.us-central1.run.app/freshcart.html |
 | Test data | https://trustlens-ai-222160488915.us-central1.run.app/freshcart_fixed.html |
